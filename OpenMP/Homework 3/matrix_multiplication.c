@@ -2,7 +2,6 @@
 #include <omp.h> 
 #include <stdio.h> 
 #include <stdlib.h> 
-#include <time.h>
 
 void matrix_mult(int r, int c, float **A, float **B, float **C){
 
@@ -71,7 +70,7 @@ int main(int argc, char* argv[])
 			cum_elapsed_time += elapsed_time;
 		}
 		avg_elapsed_time = cum_elapsed_time / n;
-		printf("Num threads %d Average elapsed time %f\n", threads[i], avg_elapsed_time);
+		printf("Number of threads utilized: %d | Average elapsed time over %d runs: %f\n", threads[i], n, avg_elapsed_time);
 	}
 
 	//Free A
