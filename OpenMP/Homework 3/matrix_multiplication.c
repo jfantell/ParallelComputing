@@ -4,7 +4,7 @@
 #include <stdlib.h> 
 #include <time.h>
 
-void matrix_mult(int r, int c, int **A, int **B, int **C){
+void matrix_mult(int r, int c, float **A, float **B, float **C){
 
 	int i, j, k;
 	#pragma omp parallel shared(A,B,C) private(i,j,k)
@@ -19,12 +19,12 @@ void matrix_mult(int r, int c, int **A, int **B, int **C){
 	}
 }
 
-int ** initialize_matrix(int r, int c, char type){
-	int ** M;
+float ** initialize_matrix(int r, int c, char type){
+	float ** M;
 	int i, j, k;
-	M = (int **)malloc(r * sizeof(int *)); 
+	M = (float **)malloc(r * sizeof(float *)); 
 	for (i=0; i<r; i++) {
-		M[i] = (int *)malloc(c * sizeof(int));
+		M[i] = (float *)malloc(c * sizeof(float));
 		for(j=0; j<c; j++){
 			if(type == 'A'){
 				M[i][j] = i*3 + (j*j)%5;
@@ -42,28 +42,18 @@ int ** initialize_matrix(int r, int c, char type){
   
 int main(int argc, char* argv[]) 
 {
-
-	// printf("Starting matrix multiply program\n");
-	// printf("How many threads would you like to use?\n");
-	
-	// //Get user input : number of desired threads to use
-	// char num_threads_buffer[4];
-	// fgets(num_threads_buffer,4,stdin);
-
-	//parse string input
-	// int num_threads = atoi(num_threads_buffer);
-
-	//setup variables to record elapsed time
-	clock_t start, end;
+	 
+	double start; 
+	double end; 
     double elapsed_time;
     double cum_elapsed_time, avg_elapsed_time;
     int i, j;
     int n = 10; //Number of trials to run per experiment
 	
-	int r = 500, c = 500;
-	int **A;
-	int **B;
-	int **C;
+	int r = 100, c = 100;
+	float **A;
+	float **B;
+	float **C;
 	
 	A = initialize_matrix(r,c,'A');
 	B = initialize_matrix(r,c,'B');
@@ -72,12 +62,12 @@ int main(int argc, char* argv[])
 	int threads[7] = {1, 2, 4, 8, 16, 32, 64};
 	for(i=0; i < 7; i++){
 		cum_elapsed_time = 0;
+		omp_set_num_threads(threads[i]);
 		for(j=0; j<n; j++){ //Three experiments for each number of threads
-			start = clock();
-			omp_set_num_threads(threads[i]);
+			start = omp_get_wtime();
 			matrix_mult(r, c, A, B, C);
-			end = clock();
-			elapsed_time = ((double) (end - start)) / CLOCKS_PER_SEC;
+			end = omp_get_wtime();
+			elapsed_time = end-start;
 			cum_elapsed_time += elapsed_time;
 		}
 		avg_elapsed_time = cum_elapsed_time / n;
