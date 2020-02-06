@@ -49,7 +49,7 @@ int main(int argc, char* argv[])
     int i, j;
     int n = 10; //Number of trials to run per experiment
 	
-	int r = 100, c = 100;
+	int r = 500, c = 500;
 	float **A;
 	float **B;
 	float **C;
